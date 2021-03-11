@@ -1,0 +1,34 @@
+server:
+  port: 8100
+  shutdown: graceful
+
+spring:
+  datasource:
+    hikari:
+      schema: public
+    url: jdbc:postgresql://localhost:5432/
+    username: postgres
+    password: hhbs77
+    platform: portgres
+    initialization-mode: always
+    #data: classpath:script/sql/data.sql
+  #flyway:
+    #enabled: true
+    #baseline-on-migrate: true
+
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+logging:
+  level:
+    root: info
+
