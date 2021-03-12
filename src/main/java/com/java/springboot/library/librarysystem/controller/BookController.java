@@ -34,7 +34,7 @@ public class BookController {
     }
 
 
-    //TODO: git, opravit flyway, dokoncit kontroller, zapnut swagger, napisat unit testy na service layer a testy s pouizitm testcontainers
+    //TODO: opravit flyway, dokoncit controller, zapnut swagger, napisat unit testy na service layer a testy s pouizitm testcontainers
     //docker, docker compose
 
     private static BookDto transform(BookEntity entity) {
@@ -46,12 +46,14 @@ public class BookController {
     }
 
     private static AuthorDto transform(AuthorEntity entity) {
-        return new AuthorDto( entity.getName());
+        return new AuthorDto( entity.getName(),entity.getId());
     }
 
     private static AuthorEntity transform(AuthorDto dto) {
         return new AuthorEntity( dto.getName());
     }
+
+
 
 
     //Otazka ... mam to transofmrovat na service alebo controller vrstve?
