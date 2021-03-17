@@ -9,15 +9,17 @@ public class BookDto {
 
     //Ako sa chovat pri dto ked mam authora ako stlpec
     private final String title;
-    //private final List<String> authors;
+    private final List<Long> authorsId;
 
 
     @JsonCreator
     public BookDto(
-                    @JsonProperty("title") String title) {
+                    @JsonProperty("title") String title,
+                    @JsonProperty("authorsId") List<Long> authorsId) {
 
         this.title = title;
-        //this.author_id = author_id;
+        this.authorsId = authorsId;
+
     }
 
 
@@ -25,7 +27,9 @@ public class BookDto {
         return title;
     }
 
-    //public long getAuthorID() {
-     //   return author_id;
-    //}
+    public List<Long> getAuthors(){
+        return authorsId;
+    }
+
+
 }

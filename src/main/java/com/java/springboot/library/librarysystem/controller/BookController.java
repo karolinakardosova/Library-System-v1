@@ -8,6 +8,7 @@ import com.java.springboot.library.librarysystem.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,16 +34,18 @@ public class BookController {
         this.authorService = authorService;
     }
 
-
-    //TODO: opravit flyway, dokoncit controller, zapnut swagger, napisat unit testy na service layer a testy s pouizitm testcontainers
+    //TODO: sprav funkciu na prekonvertovanie celeho listu na dto
+    //TODO: opravit flyway, dokoncit controller, -zapnut swagger, napisat unit testy na service layer a testy s pouizitm testcontainers
     //docker, docker compose
 
     private static BookDto transform(BookEntity entity) {
-        return new BookDto( entity.getTitle());
+        return new BookDto( entity.getTitle(), entity.getAllAuthorsId());
     }
 
-    private static BookEntity transform(BookDto dto) {
-        return new BookEntity( dto.getTitle());
+
+    private BookEntity transform(BookDto dto) {
+
+        return new BookEntity( dto.getTitle(),authorService.getAllAuthorsByID(dto.getAuthors()));
     }
 
     private static AuthorDto transform(AuthorEntity entity) {
@@ -53,10 +56,35 @@ public class BookController {
         return new AuthorEntity( dto.getName());
     }
 
+    private static List<AuthorDto> transformAuthorEntityList(List<AuthorEntity> list){
+        List<AuthorDto> dtoList = new ArrayList<AuthorDto>();
+
+        for (AuthorEntity author: list) {
+            dtoList.add(transform(author));
+        }
+        return dtoList;
+    }
+
+    private static List<AuthorEntity> transformAuthorDtoList(List<AuthorDto> list){
+        List<AuthorEntity> entityList = new ArrayList<AuthorEntity>();
+
+        for (AuthorDto author: list) {
+
+
+            AuthorEntity entity = new AuthorEntity(author.getName());
+            entity.setId(author.getId());
+
+            entityList.add(entity);
+        }
+        return entityList;
+    }
 
 
 
-    //Otazka ... mam to transofmrovat na service alebo controller vrstve?
+
+
+
+
     @PostMapping()
     //mal by vratit vytvorene ID knihy a nie void
     public ResponseEntity<Void> saveBook(@RequestBody BookDto bookDto){

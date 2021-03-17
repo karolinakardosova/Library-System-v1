@@ -17,13 +17,9 @@ public class BookEntity {
     @Column(name="title")
     @JsonProperty("title")
     private String title;
-    /*
-    @Column(name="author")
-    @JsonProperty("author")
-    private String author;
-    */
 
-    //TODO: OnetoMany alebo onetoone
+
+
     //TODO: id (foreign),key value pre entitu, typ entity, id zaznamu( primar) --> universal property tabulka
     //Tabulka - netypove hodnoty
 
@@ -34,9 +30,13 @@ public class BookEntity {
     @OneToMany(cascade = CascadeType.ALL)
     private List<AuthorEntity> authors;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<TagEntity> tags;
 
-    public BookEntity(String title){
+
+    public BookEntity(String title,List<AuthorEntity> authors){
         this.title = title;
+        this.authors = authors;
 
     }
 
@@ -99,6 +99,18 @@ public class BookEntity {
 
     public void deleteAuthor(AuthorEntity authorEntity){
         authors.remove(authorEntity);
+
+    }
+
+    public List<Long> getAllAuthorsId(){
+
+        List<Long> idList = new ArrayList<Long>();
+
+        for (AuthorEntity entity :authors) {
+            idList.add(entity.getId());
+        }
+
+        return idList;
 
     }
 

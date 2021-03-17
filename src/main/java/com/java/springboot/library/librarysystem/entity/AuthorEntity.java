@@ -21,10 +21,6 @@ public class AuthorEntity {
 
 
 
-
-    //TODO: kniha by mala autorov
-
-
     public AuthorEntity(String name){
         this.name = name;
 
