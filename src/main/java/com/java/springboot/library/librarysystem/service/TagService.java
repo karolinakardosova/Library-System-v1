@@ -7,18 +7,13 @@ import java.util.List;
 public interface TagService {
 
 
-     void saveTag(TagEntity tagEntity);
+    void saveTag(TagEntity tagEntity);
 
+    void deleteTag(TagEntity tagEntity);
 
-     void deleteTag(TagEntity tagEntity);
-
-
-     List<TagEntity> getAllTags();
-
-
+    List<TagEntity> getAllTags();
 
     List<TagEntity> getTagByKey(String key);
-
 
     void updateAuthor(TagEntity tagEntity);
 }
