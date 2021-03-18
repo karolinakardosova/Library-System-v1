@@ -4,7 +4,7 @@ import com.java.springboot.library.librarysystem.entity.BookEntity;
 import com.java.springboot.library.librarysystem.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 
@@ -32,7 +32,7 @@ public class BookServiceImpl implements BookService {
         return repository.findAll();
     }
 
-    // TODO: vrat optional nie null
+
 
     @Override
     public BookEntity getOneByID(long id){
@@ -48,32 +48,7 @@ public class BookServiceImpl implements BookService {
 
 
     }
-    /*
-    @Override
-    public List<BookEntity> getAllBooksByAuthor(String author){
-        List<BookEntity> found = new ArrayList<>();
-        for (BookEntity bookEntity :repository.findAll()) {
-            if (bookEntity.getTitle().equals(author)){
-                found.add(bookEntity);
-            }
-        }
 
-        return found;
-    }
-
-
-
-    @Override
-    public List<BookEntity> getAllBooksByTitle(String name){
-        List<BookEntity> found = new ArrayList<>();
-        for (BookEntity bookEntity :repository.findAll()) {
-            if (bookEntity.getAuthor().equals(name)){
-                found.add(bookEntity);
-            }
-        }
-        return found;
-    }
-    */
 
     @Override
     public void update(BookEntity bookEntity){

@@ -1,7 +1,6 @@
 package com.java.springboot.library.librarysystem.service;
 
 import com.java.springboot.library.librarysystem.entity.AuthorEntity;
-import com.java.springboot.library.librarysystem.entity.BookEntity;
 import com.java.springboot.library.librarysystem.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +62,10 @@ public class AuthorServiceImpl implements AuthorService {
 
         return found;
 
+    }
+
+    @Override
+    public int getSizeOfAuthors() {
+        return repository.findAll().size();
     }
 }

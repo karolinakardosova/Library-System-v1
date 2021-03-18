@@ -48,4 +48,6 @@ public interface AuthorService {
       * @return
       */
      List<AuthorEntity> getAllAuthorsByID(List<Long> idList);
+
+     int getSizeOfAuthors();
 }

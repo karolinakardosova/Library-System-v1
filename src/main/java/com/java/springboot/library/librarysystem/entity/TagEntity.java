@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name="TAG")
 public class TagEntity {
 
-    //TODO: prirad ku kazdej knihe tag ( inverted sql table ) --> to ze mam key a value, kniha moze mat viac tagov
+
 
     @Id
     @Column(name="key")

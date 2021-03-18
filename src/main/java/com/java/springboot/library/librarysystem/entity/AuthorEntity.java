@@ -4,7 +4,6 @@ package com.java.springboot.library.librarysystem.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name="AUTHOR")
@@ -13,7 +12,7 @@ public class AuthorEntity {
     private @Id
     @GeneratedValue
     @Column(name="author_id")
-    long author_id;
+    long authorId;
 
     @Column(name="name")
     @JsonProperty("name")
@@ -30,11 +29,11 @@ public class AuthorEntity {
     }
 
     public long getId(){
-        return author_id;
+        return authorId;
     }
 
     public void setId(long id) {
-        this.author_id = id;
+        this.authorId = id;
     }
 
     public String getName(){

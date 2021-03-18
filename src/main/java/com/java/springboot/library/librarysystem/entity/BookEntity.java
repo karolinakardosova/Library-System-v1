@@ -20,12 +20,7 @@ public class BookEntity {
 
 
 
-    //TODO: id (foreign),key value pre entitu, typ entity, id zaznamu( primar) --> universal property tabulka
-    //Tabulka - netypove hodnoty
 
-    //kniha -> autor nemusi mat ziadnu relaciu, kniha moze mat viac autorov --> onetomany
-    //na onetomany neurobim joincollumn
-   // @OneToOne (targetEntity = BookEntity.class, )
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<AuthorEntity> authors;
@@ -104,7 +99,7 @@ public class BookEntity {
 
     public List<Long> getAllAuthorsId(){
 
-        List<Long> idList = new ArrayList<Long>();
+        List<Long> idList = new ArrayList<>();
 
         for (AuthorEntity entity :authors) {
             idList.add(entity.getId());

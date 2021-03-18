@@ -13,6 +13,6 @@ public class LibrarySystemApplication {
 		SpringApplication.run(LibrarySystemApplication.class, args);
 		LOG.info("Library System App started");
 	}
-	//TODO: config pridaj,
+
 
 }
