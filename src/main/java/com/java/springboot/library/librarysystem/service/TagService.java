@@ -15,5 +15,4 @@ public interface TagService {
 
     List<TagEntity> getTagByKey(String key);
 
-    void updateAuthor(TagEntity tagEntity);
 }

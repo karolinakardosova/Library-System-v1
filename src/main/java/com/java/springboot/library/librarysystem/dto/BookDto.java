@@ -7,7 +7,7 @@ import java.util.List;
 
 public class BookDto {
 
-    //Ako sa chovat pri dto ked mam authora ako stlpec
+
     private final String title;
     private final List<Long> authorsId;
 

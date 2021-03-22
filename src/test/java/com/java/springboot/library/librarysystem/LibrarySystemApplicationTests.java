@@ -2,6 +2,8 @@ package com.java.springboot.library.librarysystem;
 
 import com.java.springboot.library.librarysystem.dto.AuthorDto;
 import com.java.springboot.library.librarysystem.dto.BookDto;
+import com.java.springboot.library.librarysystem.entity.AuthorEntity;
+import com.java.springboot.library.librarysystem.entity.BookEntity;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Order;
@@ -10,19 +12,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.lifecycle.Startables;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+@Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) //--> aby som to nespustala externe
-@ContextConfiguration
+@ContextConfiguration(initializers = LibrarySystemApplicationTests.Initializer.class)
 class LibrarySystemApplicationTests {
 
 	@LocalServerPort
@@ -116,12 +127,12 @@ class LibrarySystemApplicationTests {
 	@Test
 	@Order(6)
 	void addFirstBook() {
-		List<Long> authorsId = new ArrayList<Long>();
+		List<Long> authorsId = new ArrayList<>();
 		authorsId.add((long)1);
 		authorsId.add((long)2);
+
 		BookDto bookEntity = new BookDto("Hobbit" , authorsId);
 		String url = "/books";
-
 		ResponseEntity<BookDto> responseEntity = restTemplate.postForEntity(url, bookEntity, BookDto.class);
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
@@ -130,7 +141,7 @@ class LibrarySystemApplicationTests {
 	@Test
 	@Order(7)
 	void addSecondBook() {
-		List<Long> authorsId = new ArrayList<Long>();
+		List<Long> authorsId = new ArrayList<>();
 		authorsId.add((long)2);
 		authorsId.add((long)3);
 		BookDto bookEntity = new BookDto("Witcher" , authorsId);
@@ -164,6 +175,28 @@ class LibrarySystemApplicationTests {
 		assertEquals(1, responseEntity.getBody().length);
 	}
 
+
+
+	static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+		static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:12.3");
+		private static void startContainers() {
+			Startables.deepStart(Stream.of(postgres)).join();
+		}
+		private static Map<String, String> createContextConfiguration() {
+			return Map.of(
+					"spring.datasource.url", postgres.getJdbcUrl(),
+					"spring.datasource.username", postgres.getDatabaseName(),
+					"spring.datasource.password", postgres.getPassword()
+			);
+		}
+		@Override
+		public void initialize(ConfigurableApplicationContext applicationContext) {
+			startContainers();
+			ConfigurableEnvironment environment = applicationContext.getEnvironment();
+			MapPropertySource testContainers = new MapPropertySource("testcontainers", (Map) createContextConfiguration());
+			environment.getPropertySources().addFirst(testContainers);
+		}
+	}
 
 
 

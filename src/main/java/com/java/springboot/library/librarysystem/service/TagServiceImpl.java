@@ -44,10 +44,4 @@ public class TagServiceImpl implements TagService {
 
     }
 
-    @Override
-    public void updateAuthor(TagEntity tagEntity) {
-
-        repository.save(tagEntity);
-
-    }
 }

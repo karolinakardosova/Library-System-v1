@@ -2,10 +2,13 @@ package com.java.springboot.library.librarysystem.controller;
 
 import com.java.springboot.library.librarysystem.dto.AuthorDto;
 import com.java.springboot.library.librarysystem.dto.BookDto;
+import com.java.springboot.library.librarysystem.dto.TagDto;
 import com.java.springboot.library.librarysystem.entity.AuthorEntity;
 import com.java.springboot.library.librarysystem.entity.BookEntity;
+import com.java.springboot.library.librarysystem.entity.TagEntity;
 import com.java.springboot.library.librarysystem.service.AuthorService;
 import com.java.springboot.library.librarysystem.service.BookService;
+import com.java.springboot.library.librarysystem.service.TagService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +23,13 @@ public class BookController {
 
     private final BookService bookService;
     private final AuthorService authorService;
+    private final TagService tagService;
 
-    BookController(BookService bookService, AuthorService authorService) {
+    BookController(BookService bookService, AuthorService authorService, TagService tagService) {
 
         this.bookService = bookService;
         this.authorService = authorService;
+        this.tagService = tagService;
     }
 
     private static BookDto transform(BookEntity entity) {
@@ -43,6 +48,14 @@ public class BookController {
 
     private static AuthorEntity transform(AuthorDto dto) {
         return new AuthorEntity(dto.getName());
+    }
+
+    private static TagEntity transform(TagDto dto) {
+        return new TagEntity(dto.getKey(),dto.getValue());
+    }
+
+    private static TagDto transform(TagEntity entity) {
+        return new TagDto(entity.getKey(),entity.getValue());
     }
 
 
@@ -117,6 +130,32 @@ public class BookController {
             return ResponseEntity.ok().build();
         }
     }
+
+//-----------------------------------------------------
+    @GetMapping("/tags")
+    public ResponseEntity<List<TagDto>> viewTags() {
+        List<TagEntity> entities = tagService.getAllTags();
+        List<TagDto> tags = entities.stream().map(BookController::transform).collect(Collectors.toList());
+        return ResponseEntity.ok(tags);
+    }
+
+    @PostMapping("/tags")
+    public ResponseEntity<Void> saveTag(@RequestBody TagDto tagDto) {
+
+        tagService.saveTag(transform(tagDto));
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/tags/{id}")
+
+    public ResponseEntity<Void> deleteTag(@PathVariable String key) {
+
+        //TODO: spytaj sa na tabulku
+        return null;
+    }
+
+
 
 
 }

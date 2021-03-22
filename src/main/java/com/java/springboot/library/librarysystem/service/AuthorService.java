@@ -49,5 +49,5 @@ public interface AuthorService {
       */
      List<AuthorEntity> getAllAuthorsByID(List<Long> idList);
 
-     int getSizeOfAuthors();
+
 }

@@ -64,8 +64,5 @@ public class AuthorServiceImpl implements AuthorService {
 
     }
 
-    @Override
-    public int getSizeOfAuthors() {
-        return repository.findAll().size();
-    }
+
 }
