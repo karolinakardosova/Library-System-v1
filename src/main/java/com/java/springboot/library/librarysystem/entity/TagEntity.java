@@ -22,6 +22,7 @@ public class TagEntity {
 
 
     public TagEntity(String key,String value){
+        this.key = key;
         this.value = value;
 
     }

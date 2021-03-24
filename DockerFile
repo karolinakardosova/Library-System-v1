@@ -1,0 +1,11 @@
+FROM openjdk:latest
+
+VOLUME /tmp
+
+ENV PORT 80
+
+ADD target/springboot-docker
+
+RUN npm install
+
+CMD ["Docker working"]

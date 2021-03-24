@@ -1,15 +1,21 @@
 package com.java.springboot.library.librarysystem.service;
 
+
+import com.java.springboot.library.librarysystem.dto.IdDto;
 import com.java.springboot.library.librarysystem.entity.AuthorEntity;
 import com.java.springboot.library.librarysystem.repository.AuthorRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
+    private static final Logger LOG = LoggerFactory.getLogger(AuthorServiceImpl.class);
 
     private final AuthorRepository repository;
 
@@ -19,8 +25,11 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    public void saveAuthor(AuthorEntity authorEntity){
-        repository.save(authorEntity);
+    public IdDto saveAuthor(AuthorEntity authorEntity){
+
+       AuthorEntity savedEntity = repository.save(authorEntity);
+       LOG.info("id= {} name = {}",savedEntity.getId(),savedEntity.getName());
+       return new IdDto (savedEntity.getId());
     }
 
     @Override
@@ -33,15 +42,14 @@ public class AuthorServiceImpl implements AuthorService {
         return repository.findAll();
     }
 
-
+    //TODO: Toto cele mi ma vratit optional -> prerob vsetky na optional nech mi to nevracia null
+    //TODO: lambdy, transactional pozri - isolation, propagation
     @Override
-    public AuthorEntity getAuthorByID(long id){
+    public Optional<AuthorEntity> getAuthorByID(long id){
 
-        if(repository.findById(id).isPresent()){
-            return repository.findById(id).get();
-        }else {
-            return null;
-        }
+        Optional<AuthorEntity> optional = repository.findById(id);
+        return optional;
+
 
     }
 
@@ -57,7 +65,13 @@ public class AuthorServiceImpl implements AuthorService {
 
         List<AuthorEntity> found = new ArrayList<>();
         for (long id :idList) {
-            found.add(repository.findById(id).get());
+
+            //wrapper ktory vnutri ma alebo nema objekt -> na null pointer chyby
+
+            Optional<AuthorEntity> optional = repository.findById(id);
+            if(optional.isPresent()) {
+                found.add(optional.get());
+            }
         }
 
         return found;

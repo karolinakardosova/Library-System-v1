@@ -1,8 +1,10 @@
 package com.java.springboot.library.librarysystem.service;
 
+import com.java.springboot.library.librarysystem.dto.IdDto;
 import com.java.springboot.library.librarysystem.entity.BookEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface BookService {
@@ -10,7 +12,7 @@ public interface BookService {
       * Adds entity into repository.
       * @param bookEntity - Object instance
       */
-     void saveBook(BookEntity bookEntity);
+     IdDto saveBook(BookEntity bookEntity);
 
      /**
       * Deletes entity from repository.
@@ -29,7 +31,7 @@ public interface BookService {
       * @param id - unique entity identifier
       * @return BookEntity or null
       */
-     BookEntity getOneByID(long id);
+     Optional<BookEntity> getOneByID(long id);
 
 
 

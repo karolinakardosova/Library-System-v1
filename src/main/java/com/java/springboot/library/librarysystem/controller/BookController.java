@@ -1,7 +1,9 @@
 package com.java.springboot.library.librarysystem.controller;
 
+import com.java.springboot.library.librarysystem.config.DataTransformer;
 import com.java.springboot.library.librarysystem.dto.AuthorDto;
 import com.java.springboot.library.librarysystem.dto.BookDto;
+import com.java.springboot.library.librarysystem.dto.IdDto;
 import com.java.springboot.library.librarysystem.dto.TagDto;
 import com.java.springboot.library.librarysystem.entity.AuthorEntity;
 import com.java.springboot.library.librarysystem.entity.BookEntity;
@@ -9,11 +11,13 @@ import com.java.springboot.library.librarysystem.entity.TagEntity;
 import com.java.springboot.library.librarysystem.service.AuthorService;
 import com.java.springboot.library.librarysystem.service.BookService;
 import com.java.springboot.library.librarysystem.service.TagService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -24,57 +28,33 @@ public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
     private final TagService tagService;
+    private final DataTransformer dataTransformer;
 
-    BookController(BookService bookService, AuthorService authorService, TagService tagService) {
+    @Autowired
+    BookController(BookService bookService, AuthorService authorService, TagService tagService, DataTransformer dataTransformer) {
 
         this.bookService = bookService;
         this.authorService = authorService;
         this.tagService = tagService;
-    }
-
-    private static BookDto transform(BookEntity entity) {
-        return new BookDto(entity.getTitle(), entity.getAllAuthorsId());
+        this.dataTransformer = dataTransformer;
     }
 
 
-    private BookEntity transform(BookDto dto) {
-
-        return new BookEntity(dto.getTitle(), authorService.getAllAuthorsByID(dto.getAuthors()));
-    }
-
-    private static AuthorDto transform(AuthorEntity entity) {
-        return new AuthorDto(entity.getName(), entity.getId());
-    }
-
-    private static AuthorEntity transform(AuthorDto dto) {
-        return new AuthorEntity(dto.getName());
-    }
-
-    private static TagEntity transform(TagDto dto) {
-        return new TagEntity(dto.getKey(),dto.getValue());
-    }
-
-    private static TagDto transform(TagEntity entity) {
-        return new TagDto(entity.getKey(),entity.getValue());
-    }
-
-
-
+    //TODO: sprav malu klasu s id-ckami co mi ju budu wrappovat -> mozem to pouzivat aj na autorov aj knihy
 
     @PostMapping()
-    //mal by vratit vytvorene ID knihy a nie void
-    public ResponseEntity<Void> saveBook(@RequestBody BookDto bookDto) {
+    public ResponseEntity<IdDto> saveBook(@RequestBody BookDto bookDto) {
 
-        bookService.saveBook(transform(bookDto));
+        IdDto id = bookService.saveBook(dataTransformer.transform(bookDto, authorService.getAllAuthorsByID(bookDto.getAuthorsId())));
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(id);
     }
 
-
+    //TODO: lambda funkcie v jave
     @GetMapping()
     public ResponseEntity<List<BookDto>> viewBooks() {
         List<BookEntity> entities = bookService.getAllBooks();
-        List<BookDto> books = entities.stream().map(BookController::transform).collect(Collectors.toList());
+        List<BookDto> books = entities.stream().map(bookEntity -> dataTransformer.transform(bookEntity)).collect(Collectors.toList());
         return ResponseEntity.ok(books);
     }
 
@@ -82,7 +62,7 @@ public class BookController {
     @PutMapping()
     public ResponseEntity<Void> updateBook(@RequestBody BookDto bookDto) {
 
-        bookService.saveBook(transform(bookDto));
+        bookService.saveBook(dataTransformer.transform(bookDto, authorService.getAllAuthorsByID(bookDto.getAuthorsId())));
 
         return ResponseEntity.ok().build();
     }
@@ -92,12 +72,12 @@ public class BookController {
 
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
 
-        BookEntity bookEntity = bookService.getOneByID(id);
-        if (bookEntity == null) {
+        Optional<BookEntity> bookEntity = bookService.getOneByID(id);
+        if (bookEntity.isPresent()) {
             return ResponseEntity.badRequest().build();
         } else {
 
-            bookService.deleteBook(bookEntity);
+            bookService.deleteBook(bookEntity.get());
             return ResponseEntity.ok().build();
         }
     }
@@ -105,44 +85,46 @@ public class BookController {
     @GetMapping("/authors")
     public ResponseEntity<List<AuthorDto>> viewAuthors() {
         List<AuthorEntity> entities = authorService.getAllAuthors();
-        List<AuthorDto> authors = entities.stream().map(BookController::transform).collect(Collectors.toList());
+        List<AuthorDto> authors = entities.stream().map(authorEntity -> dataTransformer.transform(authorEntity)).collect(Collectors.toList());
         return ResponseEntity.ok(authors);
     }
 
     @PostMapping("/authors")
-    public ResponseEntity<Void> saveAuthor(@RequestBody AuthorDto authorDto) {
+    public ResponseEntity<IdDto> saveAuthor(@RequestBody AuthorDto authorDto) {
 
-        authorService.saveAuthor(transform(authorDto));
+        IdDto id = authorService.saveAuthor(dataTransformer.transform(authorDto));
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(id);
     }
+
 
     @DeleteMapping("/authors/{id}")
 
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
 
-        AuthorEntity authorEntity = authorService.getAuthorByID(id);
-        if (authorEntity == null) {
+        Optional<AuthorEntity> authorEntity = authorService.getAuthorByID(id);
+        if (authorEntity.isPresent()) {
             return ResponseEntity.badRequest().build();
         } else {
 
-            authorService.deleteAuthor(authorEntity);
+            authorService.deleteAuthor(authorEntity.get());
             return ResponseEntity.ok().build();
         }
     }
 
-//-----------------------------------------------------
+    //-----------------------------------------------------
     @GetMapping("/tags")
     public ResponseEntity<List<TagDto>> viewTags() {
         List<TagEntity> entities = tagService.getAllTags();
-        List<TagDto> tags = entities.stream().map(BookController::transform).collect(Collectors.toList());
+
+        List<TagDto> tags = entities.stream().map(tagEntity -> dataTransformer.transform(tagEntity)).collect(Collectors.toList());
         return ResponseEntity.ok(tags);
     }
 
     @PostMapping("/tags")
     public ResponseEntity<Void> saveTag(@RequestBody TagDto tagDto) {
 
-        tagService.saveTag(transform(tagDto));
+        tagService.saveTag(dataTransformer.transform(tagDto));
 
         return ResponseEntity.ok().build();
     }
@@ -151,11 +133,9 @@ public class BookController {
 
     public ResponseEntity<Void> deleteTag(@PathVariable String key) {
 
-        //TODO: spytaj sa na tabulku
+
         return null;
     }
-
-
 
 
 }

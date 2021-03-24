@@ -1,0 +1,8 @@
+services:
+  web:
+    build:
+      context:
+        dockerfile: DockerFile
+      container_name: library
+    ports:
+        - "80:80"

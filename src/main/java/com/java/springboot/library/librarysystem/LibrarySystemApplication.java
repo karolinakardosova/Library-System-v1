@@ -13,8 +13,6 @@ public class LibrarySystemApplication {
 		SpringApplication.run(LibrarySystemApplication.class, args);
 		LOG.info("Library System App started");
 	}
-//TODO:
-//spring boot spusti spring core a ten zostavuje podla anotacii
-	//dependency injection
+
 
 }

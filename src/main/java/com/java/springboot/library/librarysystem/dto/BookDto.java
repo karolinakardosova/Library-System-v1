@@ -27,9 +27,7 @@ public class BookDto {
         return title;
     }
 
-    public List<Long> getAuthors(){
+    public List<Long> getAuthorsId() {
         return authorsId;
     }
-
-
 }

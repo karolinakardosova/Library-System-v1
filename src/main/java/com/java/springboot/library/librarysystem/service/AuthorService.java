@@ -1,9 +1,11 @@
 package com.java.springboot.library.librarysystem.service;
 
+import com.java.springboot.library.librarysystem.dto.IdDto;
 import com.java.springboot.library.librarysystem.entity.AuthorEntity;
 
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AuthorService {
      /**
@@ -11,7 +13,7 @@ public interface AuthorService {
       * @param authorEntity
       */
 
-     void saveAuthor(AuthorEntity authorEntity);
+     IdDto saveAuthor(AuthorEntity authorEntity);
 
      /**
       *
@@ -33,7 +35,7 @@ public interface AuthorService {
       * @return
       */
 
-     AuthorEntity getAuthorByID(long id);
+     Optional<AuthorEntity> getAuthorByID(long id);
 
      /**
       *

@@ -6,25 +6,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AuthorDto {
 
     private final String name;
-    private final long id;
 
 
     @JsonCreator
     public AuthorDto(
-            @JsonProperty("name") String name,
-            @JsonProperty("id") long id) {
+            @JsonProperty("name") String name) {
 
         this.name = name;
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public long getId() {
-        return id;
-    }
+
 
 
 }

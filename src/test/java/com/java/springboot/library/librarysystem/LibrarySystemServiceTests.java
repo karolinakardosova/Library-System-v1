@@ -11,12 +11,12 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-//TODO: vytvorit profile na testy - nastavit test runtime aby nemergoval profil z normalneho aplikacneho runtimu
+
 
 @SpringBootTest
 @ActiveProfiles(value="h2",inheritProfiles = false)
 @Profile("h2")
-public class LibrarySystemServiceTests {
+class LibrarySystemServiceTests {
 
     @Autowired
     AuthorService authorService;
