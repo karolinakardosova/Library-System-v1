@@ -1,6 +1,6 @@
 package com.java.springboot.library.librarysystem;
 
-import com.java.springboot.library.librarysystem.entity.AuthorEntity;
+import com.java.springboot.library.librarysystem.dto.AuthorDto;
 import com.java.springboot.library.librarysystem.service.AuthorService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +11,12 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
+//TODO: dorob testy pre book a tag service --> testy pokryvaju aj negativne scenare
 
 @SpringBootTest
 @ActiveProfiles(value="h2",inheritProfiles = false)
 @Profile("h2")
-class LibrarySystemServiceTests {
+class LibrarySystemAuthorServiceTests {
 
     @Autowired
     AuthorService authorService;
@@ -25,11 +25,11 @@ class LibrarySystemServiceTests {
     void testAuthorService() {
 
         assertEquals(0, authorService.getAllAuthors().size());
-        AuthorEntity entity = new AuthorEntity("Tolkien");
+        AuthorDto entity = new AuthorDto("Tolkien");
         assertNotNull(entity);
         authorService.saveAuthor(entity);
         assertEquals(1, authorService.getAllAuthors().size());
-        authorService.deleteAuthor(entity);
+        authorService.deleteAuthor(1);
         assertEquals(0, authorService.getAllAuthors().size());
 
     }

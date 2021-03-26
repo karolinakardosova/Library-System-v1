@@ -52,8 +52,9 @@ class LibrarySystemApplicationTests {
 	TestRestTemplate restTemplate;
 
 
-
-
+	//TODO: update a delete testy dorob -> na tagy testy a find by tag
+	//TODO: negativne testy podorabaj
+	//TODO: pozri si controller advice
 
 	@Test
 	@Order(1)
@@ -70,10 +71,10 @@ class LibrarySystemApplicationTests {
 	@Order(2)
 	void addFirstAuthor() {
 		AuthorDto authorDto = new AuthorDto("Tolkien");
-		String url = "/books/authors";
+		String url = "/authors";
 
 		ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, authorDto, IdDto.class);
-		this.firstAuthorID = responseEntity.getBody().getId();
+		firstAuthorID = responseEntity.getBody().getId();
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
 	}
@@ -82,10 +83,10 @@ class LibrarySystemApplicationTests {
 	@Order(3)
 	void addSecondAuthor() {
 		AuthorDto authorDto = new AuthorDto("Sapkowski");
-		String url = "/books/authors";
+		String url = "/authors";
 
 		ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, authorDto, IdDto.class);
-		this.secondAuthorID = responseEntity.getBody().getId();
+		secondAuthorID = responseEntity.getBody().getId();
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
 	}
@@ -94,10 +95,10 @@ class LibrarySystemApplicationTests {
 	@Order(4)
 	void addThirdAuthor() {
 		AuthorDto authorDto = new AuthorDto("King");
-		String url = "/books/authors";
+		String url = "/authors";
 
 		ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, authorDto, IdDto.class);
-		this.thirdAuthorID = responseEntity.getBody().getId();
+		thirdAuthorID = responseEntity.getBody().getId();
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
 	}
@@ -105,8 +106,9 @@ class LibrarySystemApplicationTests {
 	@Test
 	@Order(5)
 	void checkAuthors() {
+		//TODO: pozri ci sa tam nachadzaju presne tie ID-cka co som vytvorila
 
-		String url = "/books/authors";
+		String url = "/authors";
 
 		ResponseEntity<AuthorDto[]> responseEntity = restTemplate.getForEntity(url, AuthorDto[].class);
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -142,7 +144,7 @@ class LibrarySystemApplicationTests {
 		BookDto bookEntity = new BookDto("Hobbit" , authorsId);
 		String url = "/books";
 		ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, bookEntity, IdDto.class);
-		this.firstBookID = responseEntity.getBody().getId();
+		firstBookID = responseEntity.getBody().getId();
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
 	}
@@ -156,7 +158,7 @@ class LibrarySystemApplicationTests {
 		String url = "/books";
 
 		ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, bookEntity, IdDto.class);
-		this.secondBookID = responseEntity.getBody().getId();
+		secondBookID = responseEntity.getBody().getId();
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
 	}
@@ -164,6 +166,7 @@ class LibrarySystemApplicationTests {
 	@Test
 	@Order(8)
 	void checkAllBooks() {
+		//TODO: pozri ci su tam presne tie id-cka co som pridala
 
 		String url = "/books";
 
@@ -181,7 +184,6 @@ class LibrarySystemApplicationTests {
 		restTemplate.delete(url);
 		ResponseEntity<BookDto[]> responseEntity = restTemplate.getForEntity("/books", BookDto[].class);
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		//assertEquals(1, responseEntity.getBody().length);
 	}
 
 

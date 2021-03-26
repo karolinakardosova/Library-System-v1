@@ -39,78 +39,50 @@ public class BookController {
         this.dataTransformer = dataTransformer;
     }
 
-
-    //TODO: sprav malu klasu s id-ckami co mi ju budu wrappovat -> mozem to pouzivat aj na autorov aj knihy
+    //TODO: vyhodila z controlleru datatransformer a dat to do servisnej vrstvy -> vyhodim z tadeto vyhodim datatra. a nainjectujem ho do servisnych beanov
+    //TODO: na controllerovej vrstve by som nemala pracovat priamo s entitami napr LIST<BoonEntity>
 
     @PostMapping()
     public ResponseEntity<IdDto> saveBook(@RequestBody BookDto bookDto) {
 
-        IdDto id = bookService.saveBook(dataTransformer.transform(bookDto, authorService.getAllAuthorsByID(bookDto.getAuthorsId())));
+        IdDto id = bookService.saveBook(bookDto,bookDto.getAuthorsId());
 
         return ResponseEntity.ok(id);
     }
 
-    //TODO: lambda funkcie v jave
-    @GetMapping()
+
+    @GetMapping() //done
     public ResponseEntity<List<BookDto>> viewBooks() {
-        List<BookEntity> entities = bookService.getAllBooks();
-        List<BookDto> books = entities.stream().map(bookEntity -> dataTransformer.transform(bookEntity)).collect(Collectors.toList());
-        return ResponseEntity.ok(books);
+
+        return ResponseEntity.ok(bookService.getAllBooks());
     }
 
 
     @PutMapping()
     public ResponseEntity<Void> updateBook(@RequestBody BookDto bookDto) {
 
-        bookService.saveBook(dataTransformer.transform(bookDto, authorService.getAllAuthorsByID(bookDto.getAuthorsId())));
+        bookService.saveBook(bookDto,bookDto.getAuthorsId());
 
         return ResponseEntity.ok().build();
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")//done
 
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
 
-        Optional<BookEntity> bookEntity = bookService.getOneByID(id);
-        if (bookEntity.isPresent()) {
-            return ResponseEntity.badRequest().build();
-        } else {
+        boolean result = bookService.deleteBook(id);
 
-            bookService.deleteBook(bookEntity.get());
+        if (result) {
             return ResponseEntity.ok().build();
+
+        } else {
+            return ResponseEntity.badRequest().build();
+
         }
     }
 
-    @GetMapping("/authors")
-    public ResponseEntity<List<AuthorDto>> viewAuthors() {
-        List<AuthorEntity> entities = authorService.getAllAuthors();
-        List<AuthorDto> authors = entities.stream().map(authorEntity -> dataTransformer.transform(authorEntity)).collect(Collectors.toList());
-        return ResponseEntity.ok(authors);
-    }
 
-    @PostMapping("/authors")
-    public ResponseEntity<IdDto> saveAuthor(@RequestBody AuthorDto authorDto) {
-
-        IdDto id = authorService.saveAuthor(dataTransformer.transform(authorDto));
-
-        return ResponseEntity.ok(id);
-    }
-
-
-    @DeleteMapping("/authors/{id}")
-
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
-
-        Optional<AuthorEntity> authorEntity = authorService.getAuthorByID(id);
-        if (authorEntity.isPresent()) {
-            return ResponseEntity.badRequest().build();
-        } else {
-
-            authorService.deleteAuthor(authorEntity.get());
-            return ResponseEntity.ok().build();
-        }
-    }
 
     //-----------------------------------------------------
     @GetMapping("/tags")

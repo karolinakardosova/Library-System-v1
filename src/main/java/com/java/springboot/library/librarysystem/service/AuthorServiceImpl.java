@@ -1,17 +1,22 @@
 package com.java.springboot.library.librarysystem.service;
 
 
+import com.java.springboot.library.librarysystem.config.DataTransformer;
+import com.java.springboot.library.librarysystem.dto.AuthorDto;
 import com.java.springboot.library.librarysystem.dto.IdDto;
 import com.java.springboot.library.librarysystem.entity.AuthorEntity;
 import com.java.springboot.library.librarysystem.repository.AuthorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -19,31 +24,50 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository repository;
 
-    public AuthorServiceImpl(AuthorRepository repository) {
+    @Autowired
+    private final DataTransformer dataTransformer;
+
+    public AuthorServiceImpl(AuthorRepository repository,DataTransformer dataTransformer) {
         this.repository = repository;
+        this.dataTransformer = dataTransformer;
     }
 
 
     @Override
-    public IdDto saveAuthor(AuthorEntity authorEntity){
+    public IdDto saveAuthor(AuthorDto authorDto){
 
-       AuthorEntity savedEntity = repository.save(authorEntity);
+       AuthorEntity savedEntity = repository.save(dataTransformer.transform(authorDto));
        LOG.info("id= {} name = {}",savedEntity.getId(),savedEntity.getName());
        return new IdDto (savedEntity.getId());
     }
 
     @Override
-    public void deleteAuthor(AuthorEntity authorEntity){
-        repository.delete(authorEntity);
+    public boolean deleteAuthor(long id){
+
+        Optional<AuthorEntity> authorEntity = getAuthorByID(id);
+
+        if (authorEntity.isPresent()) {
+            repository.delete(authorEntity.get());
+            return true;
+
+        } else {
+            return false;
+        }
+
     }
+
+
 
     @Override
-    public List<AuthorEntity> getAllAuthors(){
-        return repository.findAll();
+    public List<AuthorDto> getAllAuthors(){
+
+        List<AuthorEntity> entities = repository.findAll();
+        List<AuthorDto> authors = entities.stream().map(authorEntity -> dataTransformer.transform(authorEntity)).collect(Collectors.toList());
+
+        return authors;
     }
 
-    //TODO: Toto cele mi ma vratit optional -> prerob vsetky na optional nech mi to nevracia null
-    //TODO: lambdy, transactional pozri - isolation, propagation
+
     @Override
     public Optional<AuthorEntity> getAuthorByID(long id){
 
