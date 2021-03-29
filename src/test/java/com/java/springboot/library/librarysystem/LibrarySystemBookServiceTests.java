@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.transaction.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,13 +33,13 @@ public class LibrarySystemBookServiceTests {
     void testBookService() {
 
         assertEquals(0, bookService.getAllBooks().size());
-        AuthorDto authorentity = new AuthorDto("Tolkien");
-        assertNotNull(authorentity);
-        IdDto id = authorService.saveAuthor(authorentity);
+        AuthorDto authorEntity = new AuthorDto("Tolkien");
+        assertNotNull(authorEntity);
+        IdDto id = authorService.saveAuthor(authorEntity);
         List<Long>  listID = new ArrayList<>();
         listID.add(id.getId());
-        BookDto bookentity = new BookDto("Lotr",listID);
-        IdDto idBook = bookService.saveBook(bookentity,listID);
+        BookDto bookEntity = new BookDto("Lotr",listID);
+        IdDto idBook = bookService.saveBook(bookEntity,listID);
         assertEquals(1, bookService.getAllBooks().size());
         bookService.deleteBook(idBook.getId());
         assertEquals(0, bookService.getAllBooks().size());

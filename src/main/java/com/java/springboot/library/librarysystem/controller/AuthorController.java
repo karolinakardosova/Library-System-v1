@@ -1,8 +1,9 @@
 package com.java.springboot.library.librarysystem.controller;
 
-import com.java.springboot.library.librarysystem.config.DataTransformer;
+
 import com.java.springboot.library.librarysystem.dto.AuthorDto;
 import com.java.springboot.library.librarysystem.dto.IdDto;
+import com.java.springboot.library.librarysystem.entity.AuthorEntity;
 import com.java.springboot.library.librarysystem.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,21 +16,28 @@ import java.util.List;
 public class AuthorController {
 
     private final AuthorService authorService;
-    private final DataTransformer dataTransformer;
 
     @Autowired
-    public AuthorController(AuthorService authorService, DataTransformer dataTransformer) {
+    public AuthorController(AuthorService authorService) {
         this.authorService = authorService;
-        this.dataTransformer = dataTransformer;
     }
 
-    //TODO: rozdelit controller na -> books controller a author controller -> najprv prehod datatra. do servise vsrstiev
+
     //mvn clean install -Dmaven.test.skip=true
 
     @GetMapping() //done
     public ResponseEntity<List<AuthorDto>> viewAuthors() {
         return ResponseEntity.ok(authorService.getAllAuthors());
+        //throw new AuthorReferencedException("You are not allowed to see all authors");
     }
+
+
+    @GetMapping("/{id}") //done
+    public ResponseEntity<AuthorDto> viewAuthors(@PathVariable Long id) {
+        return ResponseEntity.of(authorService.getAuthorDtoByID(id));
+        //.of acceptuje optional -> ak mi nenajde da mi 400 a empty ak najde 200
+    }
+
 
     @PostMapping() //done
     public ResponseEntity<IdDto> saveAuthor(@RequestBody AuthorDto authorDto) {
@@ -53,5 +61,14 @@ public class AuthorController {
             return ResponseEntity.badRequest().build();
 
         }
+    }
+
+    @PutMapping("/{id}") //done
+    public ResponseEntity<Void> updateAuthor(@RequestBody AuthorDto authorDto, @PathVariable Long id) {
+
+
+        authorService.updateAuthor(authorDto, id);
+
+        return ResponseEntity.ok().build();
     }
 }

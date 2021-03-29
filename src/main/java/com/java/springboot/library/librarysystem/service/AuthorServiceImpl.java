@@ -9,8 +9,9 @@ import com.java.springboot.library.librarysystem.repository.AuthorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class AuthorServiceImpl implements AuthorService {
     private static final Logger LOG = LoggerFactory.getLogger(AuthorServiceImpl.class);
@@ -32,7 +34,7 @@ public class AuthorServiceImpl implements AuthorService {
         this.dataTransformer = dataTransformer;
     }
 
-
+    @Transactional(readOnly = false)
     @Override
     public IdDto saveAuthor(AuthorDto authorDto){
 
@@ -40,7 +42,7 @@ public class AuthorServiceImpl implements AuthorService {
        LOG.info("id= {} name = {}",savedEntity.getId(),savedEntity.getName());
        return new IdDto (savedEntity.getId());
     }
-
+    @Transactional(readOnly = false)
     @Override
     public boolean deleteAuthor(long id){
 
@@ -78,9 +80,51 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void updateAuthor(AuthorEntity authorEntity){
+    public Optional<AuthorDto> getAuthorDtoByID(long id) {
 
-        repository.save(authorEntity);
+
+        Optional<AuthorEntity> optional = repository.findById(id);
+        if (optional.isPresent()) {
+             return Optional.of(dataTransformer.transform(optional.get()));
+        } else {
+            return Optional.empty();
+        }
+
+        /*
+        List<AuthorDto> list = new ArrayList<>();
+        AuthorDto authorDto;
+
+        if (optional.isPresent()) {
+            authorDto = dataTransformer.transform(optional.get());
+            list.add(authorDto);
+        }
+
+        return list;
+         */
+
+
+
+
+    }
+
+    @Override
+    public AuthorEntity getExceptionID(long id){
+        return repository.findById(id).orElseThrow(()-> new NotFoundException("Author with this ID was not found"));
+
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updateAuthor(AuthorDto authorDto, long id){
+
+        Optional<AuthorEntity> authorEntity = getAuthorByID(id);
+
+        if(authorEntity.isPresent()){
+            authorEntity.get().setName(authorDto.getName());
+            repository.save(authorEntity.get());
+        }
+
+
 
     }
 
@@ -89,15 +133,11 @@ public class AuthorServiceImpl implements AuthorService {
 
         List<AuthorEntity> found = new ArrayList<>();
         for (long id :idList) {
-
-            //wrapper ktory vnutri ma alebo nema objekt -> na null pointer chyby
-
             Optional<AuthorEntity> optional = repository.findById(id);
             if(optional.isPresent()) {
                 found.add(optional.get());
             }
         }
-
         return found;
 
     }

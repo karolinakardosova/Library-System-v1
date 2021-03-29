@@ -11,7 +11,7 @@ import java.util.List;
 public class BookEntity {
     private @Id
     @GeneratedValue
-    long id; //lepsie pouzit randomuid
+    long id;
 
 
     @Column(name="title")
@@ -19,10 +19,7 @@ public class BookEntity {
     private String title;
 
 
-
-
-
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany()
     private List<AuthorEntity> authors;
 
     @OneToMany(cascade = CascadeType.ALL)

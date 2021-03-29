@@ -4,15 +4,16 @@ package com.java.springboot.library.librarysystem.service;
 import com.java.springboot.library.librarysystem.config.DataTransformer;
 import com.java.springboot.library.librarysystem.dto.BookDto;
 import com.java.springboot.library.librarysystem.dto.IdDto;
+import com.java.springboot.library.librarysystem.entity.AuthorEntity;
 import com.java.springboot.library.librarysystem.entity.BookEntity;
 import com.java.springboot.library.librarysystem.repository.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = false) //nad kazdou metodou co zapisuje tak musi mat false
     @Override
     public IdDto saveBook(BookDto bookDto,List<Long> authorIds){
-        //TODO: otazka.. mat repository navyse v bookservice? na author service nech nepracujem s entitami v controllermi
+
 
         //transakcie co zacinaju maju mat vstup aj vystup dto
         //ked z controllera volam servisnu vrstvu zacinam transakciu
@@ -83,11 +84,42 @@ public class BookServiceImpl implements BookService {
 
     }
 
-
     @Override
-    public void update(BookEntity bookEntity){
+    public Optional<BookDto> getOneDtoByID(long id){
 
-        repository.save(bookEntity);
+        Optional<BookEntity> optional = repository.findById(id);
+        if (optional.isPresent()) {
+            return Optional.of(dataTransformer.transform(optional.get()));
+        } else {
+            return Optional.empty();
+        }
+
+        /*
+        Optional<BookEntity> optional = repository.findById(id);
+        List<BookDto> list = new ArrayList<>();
+        BookDto bookDto;
+
+        if (optional.isPresent()){
+            bookDto = dataTransformer.transform(optional.get());
+            list.add(bookDto);
+        }
+
+        return list;
+
+         */
+
+    }
+
+    @Transactional(readOnly = false)
+    @Override
+    public void updateBook(BookDto bookDto,List<Long> authorIds, long id){
+        Optional<BookEntity> bookEntity = getOneByID(id);
+
+        if(bookEntity.isPresent()){
+            bookEntity.get().setAuthors(authorService.getAllAuthorsByID(authorIds));
+            bookEntity.get().setTitle(bookDto.getTitle());
+            repository.save(bookEntity.get());
+        }
 
     }
 

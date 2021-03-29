@@ -3,54 +3,29 @@ package com.java.springboot.library.librarysystem.service;
 import com.java.springboot.library.librarysystem.dto.AuthorDto;
 import com.java.springboot.library.librarysystem.dto.IdDto;
 import com.java.springboot.library.librarysystem.entity.AuthorEntity;
+import org.webjars.NotFoundException;
 
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AuthorService {
-     /**
-      *
-      * @param authorDto
-      */
 
-     IdDto saveAuthor(AuthorDto authorDto);
+    IdDto saveAuthor(AuthorDto authorDto);
 
-     /**
-      *
-      * @param authorDto
-      */
+    boolean deleteAuthor(long id);
 
-     boolean deleteAuthor(long id);
+    List<AuthorDto> getAllAuthors();
 
-     /**
-      *
-      * @return
-      */
+    Optional<AuthorEntity> getAuthorByID(long id);
 
-     List<AuthorDto> getAllAuthors();
+    Optional<AuthorDto> getAuthorDtoByID(long id);
 
-     /**
-      *
-      * @param id
-      * @return
-      */
+    AuthorEntity getExceptionID(long id);
 
-     Optional<AuthorEntity> getAuthorByID(long id);
+    void updateAuthor(AuthorDto authorDto, long id);
 
-     /**
-      *
-      * @param authorEntity
-      */
-
-     void updateAuthor(AuthorEntity authorEntity);
-
-     /**
-      *
-      * @param idList
-      * @return
-      */
-     List<AuthorEntity> getAllAuthorsByID(List<Long> idList);
+    List<AuthorEntity> getAllAuthorsByID(List<Long> idList);
 
 
 }

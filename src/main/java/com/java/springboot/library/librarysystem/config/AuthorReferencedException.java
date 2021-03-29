@@ -1,8 +1,18 @@
-package com.java.springboot.library.librarysystem.service;
+package com.java.springboot.library.librarysystem.config;
 
-public class AuthorReferencedException extends RuntimeException{
+public class AuthorReferencedException extends RuntimeException {
+
+    public AuthorReferencedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public AuthorReferencedException(String message) {
-        super(message); //-> volam konstruktor predka
+        super(message);
+
+
+
+
+        //-> volam konstruktor predka
         //TODO: exception urob
         //TODO: napr author distance is still in use pls delete -> help message
         //napr ak mazem autora co tam nie je -> overridnem NoSuchElementException
