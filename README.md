@@ -25,7 +25,7 @@ This project is simple REST API for managing a library system where it is possib
 ###Commands for building and running this project:
 - it is required to have Pg Admin localhost running
 ```
-mvn clean install
+mvn clean install -Dmaven.test.skip=true
 java -jar library-system-0.0.1-SNAPSHOT.jar
 ```
 
@@ -34,8 +34,8 @@ java -jar library-system-0.0.1-SNAPSHOT.jar
 docker pull postgres
 docker run  --name postgres-cont -e POSTGRES_PASSWORD=hhbs77 -e POSTGRES_USER=postgres -e POSTGRES_DB=postgres -d -p 5432:5432 postgres:latest 
 docker build -t library-system:1.0 .
-docker-compose up --build
 docker run -p 8100:8100 library-system:1.0 --link postgres-cont1
+docker-compose up --build
 ```
 
 ####Post Author example:
