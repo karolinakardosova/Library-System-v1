@@ -6,21 +6,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 
 @Entity
-@Table(name="AUTHOR")
+@Table(name = "AUTHOR")
 public class AuthorEntity {
 
     private @Id
     @GeneratedValue
-    @Column(name="author_id")
+    @Column(name = "author_id")
     long authorId;
 
-    @Column(name="name")
+    @Column(name = "name")
     @JsonProperty("name")
     private String name;
 
 
-
-    public AuthorEntity(String name){
+    public AuthorEntity(String name) {
         this.name = name;
 
     }
@@ -28,7 +27,7 @@ public class AuthorEntity {
     public AuthorEntity() {
     }
 
-    public long getId(){
+    public long getId() {
         return authorId;
     }
 
@@ -36,7 +35,7 @@ public class AuthorEntity {
         this.authorId = id;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 

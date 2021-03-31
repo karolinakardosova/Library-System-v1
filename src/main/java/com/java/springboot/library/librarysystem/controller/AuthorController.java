@@ -22,52 +22,36 @@ public class AuthorController {
     }
 
 
-    //mvn clean install -Dmaven.test.skip=true
-
-    @GetMapping() //done
+    @GetMapping()
     public ResponseEntity<List<AuthorDto>> viewAuthors() {
         return ResponseEntity.ok(authorService.getAllAuthors());
-        //throw new AuthorReferencedException("You are not allowed to see all authors");
+
     }
 
-
-    @GetMapping("/{id}") //done
+    @GetMapping("/{id}")
     public ResponseEntity<AuthorDto> viewAuthors(@PathVariable Long id) {
         return ResponseEntity.of(authorService.getAuthorDtoByID(id));
-        //.of acceptuje optional -> ak mi nenajde da mi 400 a empty ak najde 200
     }
 
-
-    @PostMapping() //done
+    @PostMapping()
     public ResponseEntity<IdDto> saveAuthor(@RequestBody AuthorDto authorDto) {
-
         IdDto id = authorService.saveAuthor(authorDto);
-
         return ResponseEntity.ok(id);
     }
 
-
-    @DeleteMapping("/{id}") //done
-
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
-
         boolean result = authorService.deleteAuthor(id);
-
         if (result) {
             return ResponseEntity.ok().build();
-
         } else {
             return ResponseEntity.badRequest().build();
-
         }
     }
 
-    @PutMapping("/{id}") //done
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updateAuthor(@RequestBody AuthorDto authorDto, @PathVariable Long id) {
-
-
         authorService.updateAuthor(authorDto, id);
-
         return ResponseEntity.ok().build();
     }
 }

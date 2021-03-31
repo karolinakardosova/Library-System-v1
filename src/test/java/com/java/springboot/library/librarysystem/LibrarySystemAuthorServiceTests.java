@@ -11,10 +11,9 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-//TODO: dorob testy pre book a tag service --> testy pokryvaju aj negativne scenare
 
 @SpringBootTest
-@ActiveProfiles(value="h2",inheritProfiles = false)
+@ActiveProfiles(value = "h2", inheritProfiles = false)
 @Profile("h2")
 class LibrarySystemAuthorServiceTests {
 
@@ -23,7 +22,6 @@ class LibrarySystemAuthorServiceTests {
 
     @Test
     void testAuthorService() {
-
         assertEquals(0, authorService.getAllAuthors().size());
         AuthorDto entity = new AuthorDto("Tolkien");
         assertNotNull(entity);
@@ -33,7 +31,6 @@ class LibrarySystemAuthorServiceTests {
         assertEquals(0, authorService.getAllAuthors().size());
 
     }
-
 
 
 }

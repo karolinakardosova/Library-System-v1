@@ -19,7 +19,7 @@ public class TagController {
     private DataTransformer dataTransformer;
 
 
-    public TagController(TagService tagService,DataTransformer dataTransformer) {
+    public TagController(TagService tagService, DataTransformer dataTransformer) {
         this.tagService = tagService;
         this.dataTransformer = dataTransformer;
     }
@@ -27,24 +27,18 @@ public class TagController {
     @GetMapping()
     public ResponseEntity<List<TagDto>> viewTags() {
         List<TagEntity> entities = tagService.getAllTags();
-
         List<TagDto> tags = entities.stream().map(tagEntity -> dataTransformer.transform(tagEntity)).collect(Collectors.toList());
         return ResponseEntity.ok(tags);
     }
 
     @PostMapping()
     public ResponseEntity<Void> saveTag(@RequestBody TagDto tagDto) {
-
         tagService.saveTag(dataTransformer.transform(tagDto));
-
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-
     public ResponseEntity<Void> deleteTag(@PathVariable String key) {
-
-
         return null;
     }
 

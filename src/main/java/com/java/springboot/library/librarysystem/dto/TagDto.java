@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-
 public class TagDto {
 
     private final String key;
@@ -26,7 +25,7 @@ public class TagDto {
         return key;
     }
 
-    public String getValue(){
+    public String getValue() {
         return value;
     }
 }

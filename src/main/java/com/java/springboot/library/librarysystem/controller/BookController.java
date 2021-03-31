@@ -24,56 +24,41 @@ public class BookController {
     }
 
 
-
-    @PostMapping() //done
+    @PostMapping()
     public ResponseEntity<IdDto> saveBook(@RequestBody BookDto bookDto) {
-
-        IdDto id = bookService.saveBook(bookDto,bookDto.getAuthorsId());
-
+        IdDto id = bookService.saveBook(bookDto, bookDto.getAuthorsId());
         return ResponseEntity.ok(id);
     }
 
 
-    @GetMapping() //done
+    @GetMapping()
     public ResponseEntity<List<BookDto>> viewBooks() {
-
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 
-    @GetMapping("/{id}") //done
+    @GetMapping("/{id}")
     public ResponseEntity<BookDto> viewBookById(@PathVariable Long id) {
         return ResponseEntity.of(bookService.getOneDtoByID(id));
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateBook(@RequestBody BookDto bookDto,@PathVariable Long id) {
-
-        bookService.updateBook(bookDto,bookDto.getAuthorsId(),id);
-
+    public ResponseEntity<Void> updateBook(@RequestBody BookDto bookDto, @PathVariable Long id) {
+        bookService.updateBook(bookDto, bookDto.getAuthorsId(), id);
         return ResponseEntity.ok().build();
     }
 
 
-    @DeleteMapping("/{id}")//done
+    @DeleteMapping("/{id}")
 
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-
         boolean result = bookService.deleteBook(id);
-
         if (result) {
             return ResponseEntity.ok().build();
-
         } else {
             return ResponseEntity.badRequest().build();
-
         }
     }
-
-
-
-
-
 
 
 }

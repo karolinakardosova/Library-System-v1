@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@ActiveProfiles(value="h2",inheritProfiles = false)
+@ActiveProfiles(value = "h2", inheritProfiles = false)
 @Profile("h2")
 public class LibrarySystemBookServiceTests {
 
@@ -31,15 +31,14 @@ public class LibrarySystemBookServiceTests {
 
     @Test
     void testBookService() {
-
         assertEquals(0, bookService.getAllBooks().size());
         AuthorDto authorEntity = new AuthorDto("Tolkien");
         assertNotNull(authorEntity);
         IdDto id = authorService.saveAuthor(authorEntity);
-        List<Long>  listID = new ArrayList<>();
+        List<Long> listID = new ArrayList<>();
         listID.add(id.getId());
-        BookDto bookEntity = new BookDto("Lotr",listID);
-        IdDto idBook = bookService.saveBook(bookEntity,listID);
+        BookDto bookEntity = new BookDto("Lotr", listID);
+        IdDto idBook = bookService.saveBook(bookEntity, listID);
         assertEquals(1, bookService.getAllBooks().size());
         bookService.deleteBook(idBook.getId());
         assertEquals(0, bookService.getAllBooks().size());

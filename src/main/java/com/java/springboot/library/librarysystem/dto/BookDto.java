@@ -14,8 +14,8 @@ public class BookDto {
 
     @JsonCreator
     public BookDto(
-                    @JsonProperty("title") String title,
-                    @JsonProperty("authorsId") List<Long> authorsId) {
+            @JsonProperty("title") String title,
+            @JsonProperty("authorsId") List<Long> authorsId) {
 
         this.title = title;
         this.authorsId = authorsId;

@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) //--> aby som to nespustala externe
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = LibrarySystemApplicationTests.Initializer.class)
 class LibrarySystemApplicationTests {
 
@@ -44,7 +44,7 @@ class LibrarySystemApplicationTests {
     private static long thirdAuthorID;
     private static long firstBookID;
     private static long secondBookID;
-    private static long NotExistingID =300;
+    private static long NotExistingID = 300;
     private static final Logger LOG = LoggerFactory.getLogger(AuthorServiceImpl.class);
 
 
@@ -56,15 +56,10 @@ class LibrarySystemApplicationTests {
     TestRestTemplate restTemplate;
 
 
-    //TODO: update a delete testy dorob -> na tagy testy a find by tag
-    //TODO: negativne testy podorabaj
-
     @Test
     @Order(1)
     void getBooks() {
-
         String url = "/books";
-
         ResponseEntity<BookDto[]> responseEntity = restTemplate.getForEntity(url, BookDto[].class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(0, responseEntity.getBody().length);
@@ -76,7 +71,6 @@ class LibrarySystemApplicationTests {
     void addFirstAuthor() {
         AuthorDto authorDto = new AuthorDto("Tolkien");
         String url = "/authors";
-
         ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, authorDto, IdDto.class);
         firstAuthorID = responseEntity.getBody().getId();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -88,7 +82,6 @@ class LibrarySystemApplicationTests {
     void addSecondAuthor() {
         AuthorDto authorDto = new AuthorDto("Sapkowski");
         String url = "/authors";
-
         ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, authorDto, IdDto.class);
         secondAuthorID = responseEntity.getBody().getId();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -100,7 +93,6 @@ class LibrarySystemApplicationTests {
     void addThirdAuthor() {
         AuthorDto authorDto = new AuthorDto("King");
         String url = "/authors";
-
         ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, authorDto, IdDto.class);
         thirdAuthorID = responseEntity.getBody().getId();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -110,9 +102,7 @@ class LibrarySystemApplicationTests {
     @Test
     @Order(5)
     void checkAuthors() {
-
         String url = "/authors";
-
         ResponseEntity<AuthorDto[]> responseEntity = restTemplate.getForEntity(url, AuthorDto[].class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(3, responseEntity.getBody().length);
@@ -121,9 +111,7 @@ class LibrarySystemApplicationTests {
     @Test
     @Order(5)
     void checkNonExistingAuthor() {
-
         String url = "/authors/" + NotExistingID;
-
         ResponseEntity<AuthorDto> responseEntity = restTemplate.getForEntity(url, AuthorDto.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals(null, responseEntity.getBody());
@@ -132,9 +120,7 @@ class LibrarySystemApplicationTests {
     @Test
     @Order(5)
     void checkNonExistingBooks() {
-
-        String url = "/books/" + NotExistingID;;
-
+        String url = "/books/" + NotExistingID;
         ResponseEntity<BookDto> responseEntity = restTemplate.getForEntity(url, BookDto.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals(null, responseEntity.getBody());
@@ -144,7 +130,6 @@ class LibrarySystemApplicationTests {
     @Test
     @Order(5)
     void updateFirstAuthor() {
-
         String url = "/authors/" + firstAuthorID;
         AuthorDto authorDto = new AuthorDto("TOLKIEN");
         restTemplate.put(url, authorDto);
@@ -159,7 +144,6 @@ class LibrarySystemApplicationTests {
     void addFirstBook() {
         List<Long> authorsId = new ArrayList<>();
         authorsId.add(firstAuthorID);
-
         BookDto bookEntity = new BookDto("Hobbit", authorsId);
         String url = "/books";
         ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, bookEntity, IdDto.class);
@@ -175,7 +159,6 @@ class LibrarySystemApplicationTests {
         authorsId.add(thirdAuthorID);
         BookDto bookEntity = new BookDto("Witcher", authorsId);
         String url = "/books";
-
         ResponseEntity<IdDto> responseEntity = restTemplate.postForEntity(url, bookEntity, IdDto.class);
         secondBookID = responseEntity.getBody().getId();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -185,9 +168,7 @@ class LibrarySystemApplicationTests {
     @Test
     @Order(8)
     void checkAllBooks() {
-
         String url = "/books";
-
         ResponseEntity<BookDto[]> responseEntity = restTemplate.getForEntity(url, BookDto[].class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(2, responseEntity.getBody().length);
@@ -199,14 +180,11 @@ class LibrarySystemApplicationTests {
         List<Long> authorsId = new ArrayList<>();
         authorsId.add(firstAuthorID);
         authorsId.add(secondAuthorID);
-
         String url = "/books/" + firstBookID;
         BookDto bookDto = new BookDto("HOBBIT", authorsId);
         restTemplate.put(url, bookDto);
         ResponseEntity<BookDto> responseEntity = restTemplate.getForEntity(url, BookDto.class);
-
         LOG.info("id= {} name = {} authors = {}", firstBookID, responseEntity.getBody().getTitle(), responseEntity.getBody().getAuthorsId());
-
         assertEquals(responseEntity.getBody().getTitle(), bookDto.getTitle());
         List<Long> authors = responseEntity.getBody().getAuthorsId();
         Collections.sort(authors);
@@ -216,9 +194,7 @@ class LibrarySystemApplicationTests {
     @Test
     @Order(9)
     void tryDeleteFirstAuthor() {
-
         String url = "/authors/" + firstAuthorID;
-
         restTemplate.delete(url);
         ResponseEntity<AuthorDto> responseEntity = restTemplate.getForEntity(url, AuthorDto.class);
         assertNotNull(responseEntity.getBody());
@@ -227,9 +203,7 @@ class LibrarySystemApplicationTests {
     @Test
     @Order(10)
     void deleteFirstBook() {
-
         String url = "/books/" + firstBookID;
-
         restTemplate.delete(url);
         ResponseEntity<BookDto[]> responseEntity = restTemplate.getForEntity("/books", BookDto[].class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -239,9 +213,7 @@ class LibrarySystemApplicationTests {
     @Test
     @Order(11)
     void deleteFirstAuthor() {
-
         String url = "/authors/" + firstAuthorID;
-
         restTemplate.delete(url);
         ResponseEntity<AuthorDto> responseEntity = restTemplate.getForEntity(url, AuthorDto.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
