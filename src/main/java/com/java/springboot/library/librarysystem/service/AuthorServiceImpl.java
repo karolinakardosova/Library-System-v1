@@ -1,6 +1,5 @@
 package com.java.springboot.library.librarysystem.service;
 
-
 import com.java.springboot.library.librarysystem.config.DataTransformer;
 import com.java.springboot.library.librarysystem.dto.AuthorDto;
 import com.java.springboot.library.librarysystem.dto.IdDto;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,29 +20,30 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class AuthorServiceImpl implements AuthorService {
-    private static final Logger LOG = LoggerFactory.getLogger(AuthorServiceImpl.class);
 
+    private static final Logger LOG = LoggerFactory.getLogger(AuthorServiceImpl.class);
     private final AuthorRepository repository;
 
     @Autowired
     private final DataTransformer dataTransformer;
 
-    public AuthorServiceImpl(AuthorRepository repository,DataTransformer dataTransformer) {
+    public AuthorServiceImpl(AuthorRepository repository, DataTransformer dataTransformer) {
         this.repository = repository;
         this.dataTransformer = dataTransformer;
     }
 
     @Transactional(readOnly = false)
     @Override
-    public IdDto saveAuthor(AuthorDto authorDto){
+    public IdDto saveAuthor(AuthorDto authorDto) {
 
-       AuthorEntity savedEntity = repository.save(dataTransformer.transform(authorDto));
-       LOG.info("id= {} name = {}",savedEntity.getId(),savedEntity.getName());
-       return new IdDto (savedEntity.getId());
+        AuthorEntity savedEntity = repository.save(dataTransformer.transform(authorDto));
+        LOG.info("id= {} name = {}", savedEntity.getId(), savedEntity.getName());
+        return new IdDto(savedEntity.getId());
     }
+
     @Transactional(readOnly = false)
     @Override
-    public boolean deleteAuthor(long id){
+    public boolean deleteAuthor(long id) {
 
         Optional<AuthorEntity> authorEntity = getAuthorByID(id);
 
@@ -59,9 +58,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
 
-
     @Override
-    public List<AuthorDto> getAllAuthors(){
+    public List<AuthorDto> getAllAuthors() {
 
         List<AuthorEntity> entities = repository.findAll();
         List<AuthorDto> authors = entities.stream().map(authorEntity -> dataTransformer.transform(authorEntity)).collect(Collectors.toList());
@@ -71,7 +69,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    public Optional<AuthorEntity> getAuthorByID(long id){
+    public Optional<AuthorEntity> getAuthorByID(long id) {
 
         Optional<AuthorEntity> optional = repository.findById(id);
         return optional;
@@ -85,56 +83,40 @@ public class AuthorServiceImpl implements AuthorService {
 
         Optional<AuthorEntity> optional = repository.findById(id);
         if (optional.isPresent()) {
-             return Optional.of(dataTransformer.transform(optional.get()));
+            return Optional.of(dataTransformer.transform(optional.get()));
         } else {
             return Optional.empty();
         }
 
-        /*
-        List<AuthorDto> list = new ArrayList<>();
-        AuthorDto authorDto;
-
-        if (optional.isPresent()) {
-            authorDto = dataTransformer.transform(optional.get());
-            list.add(authorDto);
-        }
-
-        return list;
-         */
-
-
-
-
     }
 
     @Override
-    public AuthorEntity getExceptionID(long id){
-        return repository.findById(id).orElseThrow(()-> new NotFoundException("Author with this ID was not found"));
+    public AuthorEntity getExceptionID(long id) {
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("Author with this ID was not found"));
 
     }
 
     @Transactional(readOnly = false)
     @Override
-    public void updateAuthor(AuthorDto authorDto, long id){
+    public void updateAuthor(AuthorDto authorDto, long id) {
 
         Optional<AuthorEntity> authorEntity = getAuthorByID(id);
 
-        if(authorEntity.isPresent()){
+        if (authorEntity.isPresent()) {
             authorEntity.get().setName(authorDto.getName());
             repository.save(authorEntity.get());
         }
 
 
-
     }
 
     @Override
-    public List<AuthorEntity> getAllAuthorsByID(List<Long> idList){
+    public List<AuthorEntity> getAllAuthorsByID(List<Long> idList) {
 
         List<AuthorEntity> found = new ArrayList<>();
-        for (long id :idList) {
+        for (long id : idList) {
             Optional<AuthorEntity> optional = repository.findById(id);
-            if(optional.isPresent()) {
+            if (optional.isPresent()) {
                 found.add(optional.get());
             }
         }

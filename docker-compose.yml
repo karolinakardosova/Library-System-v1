@@ -1,0 +1,52 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:latest
+    network_mode: bridge
+    container_name: postgres-cont1
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=hhbs77
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    restart: unless-stopped
+
+  pgAdmin:
+    image: dpage/pgadmin4
+    network_mode: bridge
+    container_name: pgadmin-container-postgres
+    expose:
+      - 80
+    ports:
+      - 80:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=postgres@postgres.com
+      - PGADMIN_DEFAULT_PASSWORD=hhbs77
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    links:
+      - postgres
+  springbootapp:
+    image: library-system:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    network_mode: bridge
+    container_name: springapp-container-postgres
+    expose:
+      - 8100
+    ports:
+      - 8100:8100
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    links:
+      - postgres
+volumes:
+  postgresvolume:

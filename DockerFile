@@ -1,3 +1,0 @@
-FROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine
-COPY build/libs/library-system-0.0.1-SNAPSHOT.jar /library-system-0.0.1-SNAPSHOT.jar
-ENTRYPOINT ["java", "-Xms32m", "-Xms128M", "-jar","/library-system-0.0.1-SNAPSHOT.jar"]

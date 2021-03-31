@@ -3,7 +3,6 @@ package com.java.springboot.library.librarysystem;
 import com.java.springboot.library.librarysystem.dto.AuthorDto;
 import com.java.springboot.library.librarysystem.dto.BookDto;
 import com.java.springboot.library.librarysystem.dto.IdDto;
-import com.java.springboot.library.librarysystem.entity.BookEntity;
 import com.java.springboot.library.librarysystem.service.AuthorServiceImpl;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startables;
 
-import javax.validation.constraints.AssertFalse;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -45,6 +44,7 @@ class LibrarySystemApplicationTests {
     private static long thirdAuthorID;
     private static long firstBookID;
     private static long secondBookID;
+    private static long NotExistingID =300;
     private static final Logger LOG = LoggerFactory.getLogger(AuthorServiceImpl.class);
 
 
@@ -122,7 +122,7 @@ class LibrarySystemApplicationTests {
     @Order(5)
     void checkNonExistingAuthor() {
 
-        String url = "/authors/300";
+        String url = "/authors/" + NotExistingID;
 
         ResponseEntity<AuthorDto> responseEntity = restTemplate.getForEntity(url, AuthorDto.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
@@ -133,7 +133,7 @@ class LibrarySystemApplicationTests {
     @Order(5)
     void checkNonExistingBooks() {
 
-        String url = "/authors/300";
+        String url = "/books/" + NotExistingID;;
 
         ResponseEntity<BookDto> responseEntity = restTemplate.getForEntity(url, BookDto.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
@@ -144,8 +144,6 @@ class LibrarySystemApplicationTests {
     @Test
     @Order(5)
     void updateFirstAuthor() {
-
-        //TODO: odstran pole a nech to je len objekt jeden -> []
 
         String url = "/authors/" + firstAuthorID;
         AuthorDto authorDto = new AuthorDto("TOLKIEN");
